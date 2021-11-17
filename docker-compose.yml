@@ -1,0 +1,53 @@
+version: '3.8'
+
+services:
+  dev:
+    container_name: nestjs_api_dev
+    image: nestjs-api-dev:1.0.0
+    build:
+      context: .
+      target: development
+      dockerfile: ./Dockerfile
+    command: npm run build
+    ports:
+      - 8082:8082
+    networks:
+      - nestjs-network
+    volumes:
+      - .:/usr/src/app
+      - /usr/src/app/node_modules
+    restart: unless-stopped
+  prod:
+    container_name: nestjs_api_prod
+    image: nestjs-api-prod:1.0.0
+    build:
+      context: .
+      target: production
+      dockerfile: ./Dockerfile
+    command: npm run start:prod
+    ports:
+      - 8080:8080
+    networks:
+      - nestjs-network
+    volumes:
+      - .:/usr/src/app
+      - /usr/src/app/node_modules
+    restart: unless-stopped
+  test:
+      container_name: nestjs_api_test
+      image: nestjs-api-test:1.0.0
+      build:
+        context: .
+        target: test
+        dockerfile: ./Dockerfile
+      command: npm run test
+      ports:
+        - 8081:8081
+      networks:
+        - nestjs-network
+      volumes:
+        - .:/usr/src/app
+        - /usr/src/app/node_modules
+
+networks:
+  nestjs-network:
